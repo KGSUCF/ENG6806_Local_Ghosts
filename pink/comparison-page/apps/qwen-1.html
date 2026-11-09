@@ -1,0 +1,1090 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>In Search of Pink</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-pink: #ff69b4;
+            --primary-pink-light: #ff85c0;
+            --primary-pink-dark: #e60073;
+            --secondary-gray: #a0a0a0;
+            --background-light: #fff;
+            --background-dark: #121212;
+            --text-light: #333;
+            --text-dark: #f5f5f5;
+            --border-light: #e0e0e0;
+            --border-dark: #333;
+            --shadow-light: rgba(0, 0, 0, 0.1);
+            --shadow-dark: rgba(0, 0, 0, 0.3);
+            --success: #4caf50;
+            --warning: #ff9800;
+            --danger: #f44336;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--background-light);
+            color: var(--text-light);
+            padding-bottom: 80px;
+            min-height: 100vh;
+        }
+
+        body.dark-mode {
+            background-color: var(--background-dark);
+            color: var(--text-dark);
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 20px 0;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        body.dark-mode header {
+            border-bottom: 1px solid var(--border-dark);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: var(--primary-pink);
+            margin-bottom: 10px;
+            text-shadow: 1px 1px 2px rgba(255, 105, 180, 0.2);
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: var(--secondary-gray);
+            margin-bottom: 15px;
+        }
+
+        .search-container {
+            position: sticky;
+            top: 0;
+            background-color: var(--background-light);
+            padding: 15px 0;
+            z-index: 10;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        body.dark-mode .search-container {
+            background-color: var(--background-dark);
+            border-bottom: 1px solid var(--border-dark);
+        }
+
+        #search-box {
+            width: 100%;
+            padding: 12px 15px;
+            font-size: 1.1rem;
+            border-radius: 30px;
+            border: 1px solid var(--border-light);
+            background-color: var(--background-light);
+            color: var(--text-light);
+            box-shadow: 0 2px 5px var(--shadow-light);
+        }
+
+        body.dark-mode #search-box {
+            border: 1px solid var(--border-dark);
+            background-color: #1e1e1e;
+            color: var(--text-dark);
+            box-shadow: 0 2px 5px var(--shadow-dark);
+        }
+
+        .filter-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 8px 15px;
+            border-radius: 20px;
+            background-color: var(--background-light);
+            color: var(--text-light);
+            border: 1px solid var(--border-light);
+            font-weight: 500;
+            cursor: pointer;
+            min-width: 90px;
+            text-align: center;
+        }
+
+        body.dark-mode .filter-btn {
+            background-color: #1e1e1e;
+            color: var(--text-dark);
+            border: 1px solid var(--border-dark);
+        }
+
+        .filter-btn.active {
+            background-color: var(--primary-pink);
+            color: white;
+            border-color: var(--primary-pink);
+        }
+
+        .filter-btn:hover:not(.active) {
+            background-color: #f0f0f0;
+        }
+
+        body.dark-mode .filter-btn:hover:not(.active) {
+            background-color: #2a2a2a;
+        }
+
+        .restaurant-list {
+            list-style: none;
+            margin-top: 10px;
+        }
+
+        .restaurant-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid var(--border-light);
+            background-color: var(--background-light);
+            border-radius: 8px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 5px var(--shadow-light);
+        }
+
+        body.dark-mode .restaurant-item {
+            border-bottom: 1px solid var(--border-dark);
+            background-color: #1e1e1e;
+            box-shadow: 0 2px 5px var(--shadow-dark);
+        }
+
+        .restaurant-name {
+            flex-grow: 1;
+            font-size: 1.2rem;
+            font-weight: 500;
+        }
+
+        .badge {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+        }
+
+        .badge-pink {
+            background-color: var(--primary-pink);
+        }
+
+        .badge-gray {
+            background-color: var(--secondary-gray);
+        }
+
+        .badge-striped {
+            background: repeating-linear-gradient(
+                45deg,
+                #a0a0a0,
+                #a0a0a0 10px,
+                #d0d0d0 10px,
+                #d0d0d0 20px
+            );
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 30px;
+            font-size: 1.2rem;
+            color: var(--secondary-gray);
+        }
+
+        .add-restaurant-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: var(--primary-pink);
+            color: white;
+            border: none;
+            font-size: 1.8rem;
+            box-shadow: 0 4px 10px rgba(230, 0, 115, 0.4);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 20;
+        }
+
+        .panel {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        .panel.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .panel-content {
+            background-color: var(--background-light);
+            width: 90%;
+            max-width: 500px;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transform: translateY(20px);
+            transition: transform 0.3s;
+        }
+
+        body.dark-mode .panel-content {
+            background-color: #1e1e1e;
+        }
+
+        .panel.active .panel-content {
+            transform: translateY(0);
+        }
+
+        .panel-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: var(--primary-pink);
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 1px solid var(--border-light);
+            background-color: var(--background-light);
+            color: var(--text-light);
+            font-size: 1rem;
+        }
+
+        body.dark-mode .form-control {
+            border: 1px solid var(--border-dark);
+            background-color: #2a2a2a;
+            color: var(--text-dark);
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border-radius: 8px;
+            border: none;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-pink);
+            color: white;
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary-gray);
+            color: white;
+        }
+
+        .btn-danger {
+            background-color: var(--danger);
+            color: white;
+        }
+
+        .btn-success {
+            background-color: var(--success);
+            color: white;
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--primary-pink);
+            color: var(--primary-pink);
+        }
+
+        body.dark-mode .btn-outline {
+            border: 1px solid var(--primary-pink-light);
+            color: var(--primary-pink-light);
+        }
+
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 15px 25px;
+            border-radius: 8px;
+            background-color: var(--success);
+            color: white;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        .notification.show {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .highlight {
+            background-color: rgba(255, 105, 180, 0.3);
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+
+        .menu-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--primary-pink);
+            color: white;
+            border: none;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 10px rgba(230, 0, 115, 0.4);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 20;
+        }
+
+        .menu-panel {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            width: 250px;
+            background-color: var(--background-light);
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            z-index: 100;
+            transform: translateY(-20px);
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s;
+        }
+
+        body.dark-mode .menu-panel {
+            background-color: #1e1e1e;
+        }
+
+        .menu-panel.active {
+            transform: translateY(0);
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .menu-item {
+            padding: 15px;
+            border-bottom: 1px solid var(--border-light);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        body.dark-mode .menu-item {
+            border-bottom: 1px solid var(--border-dark);
+        }
+
+        .menu-item:last-child {
+            border-bottom: none;
+        }
+
+        .menu-item:hover {
+            background-color: rgba(255, 105, 180, 0.1);
+        }
+
+        .copy-btn {
+            background-color: var(--primary-pink-light);
+            color: white;
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 8px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .copy-btn:hover {
+            background-color: var(--primary-pink-dark);
+        }
+
+        .date-display {
+            font-size: 0.9rem;
+            color: var(--secondary-gray);
+            margin-top: 5px;
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .subtitle {
+                font-size: 1rem;
+            }
+
+            .filter-btn {
+                min-width: 70px;
+                padding: 6px 12px;
+                font-size: 0.9rem;
+            }
+
+            .restaurant-item {
+                padding: 12px;
+            }
+
+            .restaurant-name {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>In Search of Pink</h1>
+            <p class="subtitle">Tracking Sweet'N Low packets in Fort Lauderdale restaurants</p>
+        </header>
+
+        <div class="search-container">
+            <input type="text" id="search-box" placeholder="Search restaurants...">
+        </div>
+
+        <div class="filter-buttons">
+            <button class="filter-btn active" data-filter="all">All (0)</button>
+            <button class="filter-btn" data-filter="pink">Pink (0)</button>
+            <button class="filter-btn" data-filter="no">No (0)</button>
+            <button class="filter-btn" data-filter="not-checked">Not checked (0)</button>
+        </div>
+
+        <ul id="restaurant-list" class="restaurant-list">
+            <!-- Restaurant items will be added here dynamically -->
+        </ul>
+
+        <button class="add-restaurant-btn" id="add-btn">+</button>
+        <button class="menu-btn" id="menu-btn">☰</button>
+    </div>
+
+    <!-- Add Restaurant Panel -->
+    <div class="panel" id="add-panel">
+        <div class="panel-content">
+            <h2 class="panel-title">Add Restaurant</h2>
+            <div class="form-group">
+                <label for="restaurant-name">Restaurant Name</label>
+                <input type="text" id="restaurant-name" class="form-control" placeholder="Enter restaurant name">
+            </div>
+            <div class="form-group">
+                <label for="restaurant-answer">Answer</label>
+                <select id="restaurant-answer" class="form-control">
+                    <option value="pink">Pink</option>
+                    <option value="no">No</option>
+                    <option value="not-checked">Not checked</option>
+                </select>
+            </div>
+            <button class="btn btn-primary" id="save-restaurant-btn">Save Restaurant</button>
+            <button class="btn btn-outline" id="cancel-add-btn">Cancel</button>
+        </div>
+    </div>
+
+    <!-- Edit Restaurant Panel -->
+    <div class="panel" id="edit-panel">
+        <div class="panel-content">
+            <h2 class="panel-title">Edit Restaurant</h2>
+            <input type="hidden" id="edit-id">
+            <div class="form-group">
+                <label for="edit-name">Restaurant Name</label>
+                <input type="text" id="edit-name" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="edit-answer">Answer</label>
+                <select id="edit-answer" class="form-control">
+                    <option value="pink">Pink</option>
+                    <option value="no">No</option>
+                    <option value="not-checked">Not checked</option>
+                </select>
+            </div>
+            <div class="date-display" id="edit-date"></div>
+            <button class="btn btn-success" id="save-edit-btn">Save Changes</button>
+            <button class="btn btn-danger" id="delete-restaurant-btn">Delete Restaurant</button>
+            <button class="btn btn-outline" id="cancel-edit-btn">Cancel</button>
+        </div>
+    </div>
+
+    <!-- Menu Panel -->
+    <div class="menu-panel" id="menu-panel">
+        <div class="menu-item" id="share-list-btn">
+            <span>📋</span> Share the list
+        </div>
+        <div class="menu-item" id="import-list-btn">
+            <span>📥</span> Import a list
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div class="notification" id="notification">
+        <span id="notification-text">Changes saved!</span>
+        <button class="btn btn-outline" id="undo-btn" style="margin-top: 10px; padding: 5px 10px;">Undo</button>
+    </div>
+
+    <!-- Share List Panel -->
+    <div class="panel" id="share-panel">
+        <div class="panel-content">
+            <h2 class="panel-title">Share the List</h2>
+            <textarea id="share-text" class="form-control" rows="15" readonly></textarea>
+            <button class="btn btn-primary copy-btn" id="copy-text-btn">
+                <span>📋</span> Copy to Clipboard
+            </button>
+            <button class="btn btn-outline" id="close-share-btn">Close</button>
+        </div>
+    </div>
+
+    <!-- Import List Panel -->
+    <div class="panel" id="import-panel">
+        <div class="panel-content">
+            <h2 class="panel-title">Import a List</h2>
+            <div class="form-group">
+                <label for="import-text">Paste your list here:</label>
+                <textarea id="import-text" class="form-control" rows="10" placeholder="Paste the list text here..."></textarea>
+            </div>
+            <button class="btn btn-primary" id="import-btn">Import List</button>
+            <button class="btn btn-outline" id="cancel-import-btn">Cancel</button>
+        </div>
+    </div>
+
+    <script>
+        // Restaurant data
+        const initialRestaurants = [
+            { id: '1', name: "Doc B's", answer: "pink", date: "2023-05-15" },
+            { id: '2', name: "Tap 42", answer: "pink", date: "2023-06-22" },
+            { id: '3', name: "Moxies", answer: "pink", date: "2023-07-10" },
+            { id: '4', name: "YOLO", answer: "pink", date: "2023-08-05" },
+            { id: '5', name: "Foxy Brown", answer: "pink", date: "2023-09-12" },
+            { id: '6', name: "Blue Moon Fish", answer: "pink", date: "2023-10-03" },
+            { id: '7', name: "Fogo", answer: "pink", date: "2023-10-28" },
+            { id: '8', name: "Cheesecake Factory", answer: "pink", date: "2023-11-15" },
+            { id: '9', name: "Del Frisco's", answer: "pink", date: "2023-12-01" },
+            { id: '10', name: "Carrabba's", answer: "pink", date: "2023-12-20" },
+            { id: '11', name: "Lobster Bar", answer: "pink", date: "2024-01-10" },
+            { id: '12', name: "Boathouse", answer: "no", date: "2023-05-18" },
+            { id: '13', name: "YOT", answer: "no", date: "2023-06-25" },
+            { id: '14', name: "Louie Bossi", answer: "no", date: "2023-07-15" },
+            { id: '15', name: "Big City", answer: "no", date: "2023-08-12" },
+            { id: '16', name: "El Camino", answer: "no", date: "2023-09-20" },
+            { id: '17', name: "60 Vines", answer: "no", date: "2023-10-15" },
+            { id: '18', name: "Chimney House", answer: "no", date: "2023-11-05" },
+            { id: '19', name: "Mykonos", answer: "no", date: "2023-12-10" },
+            { id: '20', name: "S3", answer: "no", date: "2024-01-05" },
+            { id: '21', name: "Seasons 52", answer: "no", date: "2024-01-20" },
+            { id: '22', name: "Las Vegas", answer: "no", date: "2024-02-01" },
+            { id: '23', name: "Worthwyld", answer: "not-checked", date: "2023-05-20" },
+            { id: '24', name: "American Social", answer: "not-checked", date: "2023-06-30" },
+            { id: '25', name: "Kaluz", answer: "not-checked", date: "2023-07-25" }
+        ];
+
+        // App state
+        let restaurants = JSON.parse(localStorage.getItem('restaurants')) || initialRestaurants;
+        let currentFilter = 'all';
+        let currentSearch = '';
+        let notificationTimeout;
+
+        // DOM Elements
+        const restaurantList = document.getElementById('restaurant-list');
+        const searchBox = document.getElementById('search-box');
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const addBtn = document.getElementById('add-btn');
+        const addPanel = document.getElementById('add-panel');
+        const editPanel = document.getElementById('edit-panel');
+        const menuBtn = document.getElementById('menu-btn');
+        const menuPanel = document.getElementById('menu-panel');
+        const notification = document.getElementById('notification');
+        const sharePanel = document.getElementById('share-panel');
+        const importPanel = document.getElementById('import-panel');
+        const shareListBtn = document.getElementById('share-list-btn');
+        const importListBtn = document.getElementById('import-list-btn');
+        const copyTextBtn = document.getElementById('copy-text-btn');
+        const closeShareBtn = document.getElementById('close-share-btn');
+        const undoBtn = document.getElementById('undo-btn');
+
+        // Initialize the app
+        function init() {
+            renderRestaurants();
+            updateFilterCounts();
+            setupEventListeners();
+
+            // Check for dark mode preference
+            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                document.body.classList.add('dark-mode');
+            }
+        }
+
+        // Set up event listeners
+        function setupEventListeners() {
+            // Search functionality
+            searchBox.addEventListener('input', handleSearch);
+
+            // Filter buttons
+            filterButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    currentFilter = button.dataset.filter;
+                    renderRestaurants();
+                    updateFilterCounts();
+                });
+            });
+
+            // Add restaurant button
+            addBtn.addEventListener('click', () => {
+                document.getElementById('restaurant-name').value = '';
+                document.getElementById('restaurant-answer').value = 'not-checked';
+                addPanel.classList.add('active');
+            });
+
+            // Save new restaurant
+            document.getElementById('save-restaurant-btn').addEventListener('click', saveNewRestaurant);
+
+            // Cancel add
+            document.getElementById('cancel-add-btn').addEventListener('click', () => {
+                addPanel.classList.remove('active');
+            });
+
+            // Menu button
+            menuBtn.addEventListener('click', () => {
+                menuPanel.classList.toggle('active');
+            });
+
+            // Share list
+            shareListBtn.addEventListener('click', showShareList);
+
+            // Import list
+            importListBtn.addEventListener('click', () => {
+                menuPanel.classList.remove('active');
+                importPanel.classList.add('active');
+            });
+
+            // Copy text
+            copyTextBtn.addEventListener('click', copyToClipboard);
+
+            // Close share panel
+            closeShareBtn.addEventListener('click', () => {
+                sharePanel.classList.remove('active');
+            });
+
+            // Import button
+            document.getElementById('import-btn').addEventListener('click', importList);
+
+            // Cancel import
+            document.getElementById('cancel-import-btn').addEventListener('click', () => {
+                importPanel.classList.remove('active');
+            });
+
+            // Undo button
+            undoBtn.addEventListener('click', () => {
+                restaurants = JSON.parse(localStorage.getItem('restaurants')) || initialRestaurants;
+                renderRestaurants();
+                showNotification('Changes undone');
+            });
+
+            // Close panels when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!addPanel.contains(e.target) && !addBtn.contains(e.target)) {
+                    addPanel.classList.remove('active');
+                }
+
+                if (!editPanel.contains(e.target) && !restaurantList.contains(e.target)) {
+                    editPanel.classList.remove('active');
+                }
+
+                if (!menuPanel.contains(e.target) && !menuBtn.contains(e.target)) {
+                    menuPanel.classList.remove('active');
+                }
+
+                if (!sharePanel.contains(e.target)) {
+                    sharePanel.classList.remove('active');
+                }
+
+                if (!importPanel.contains(e.target)) {
+                    importPanel.classList.remove('active');
+                }
+            });
+        }
+
+        // Handle search input
+        function handleSearch() {
+            currentSearch = searchBox.value.toLowerCase();
+            renderRestaurants();
+        }
+
+        // Save new restaurant
+        function saveNewRestaurant() {
+            const name = document.getElementById('restaurant-name').value.trim();
+            const answer = document.getElementById('restaurant-answer').value;
+
+            if (!name) {
+                alert('Please enter a restaurant name');
+                return;
+            }
+
+            // Check if restaurant already exists
+            const existing = restaurants.find(r =>
+                r.name.toLowerCase().replace(/\s+/g, '').replace(/'/g, '') ===
+                name.toLowerCase().replace(/\s+/g, '').replace(/'/g, '')
+            );
+
+            if (existing) {
+                alert('This restaurant is already in the list!');
+                return;
+            }
+
+            const newRestaurant = {
+                id: Date.now().toString(),
+                name,
+                answer,
+                date: new Date().toISOString().split('T')[0]
+            };
+
+            restaurants.push(newRestaurant);
+            saveToLocalStorage();
+            renderRestaurants();
+            addPanel.classList.remove('active');
+            showNotification('Restaurant added!');
+        }
+
+        // Edit restaurant
+        function editRestaurant(id) {
+            const restaurant = restaurants.find(r => r.id === id);
+            if (!restaurant) return;
+
+            document.getElementById('edit-id').value = id;
+            document.getElementById('edit-name').value = restaurant.name;
+            document.getElementById('edit-answer').value = restaurant.answer;
+            document.getElementById('edit-date').textContent = `Last updated: ${restaurant.date}`;
+
+            editPanel.classList.add('active');
+        }
+
+        // Save edited restaurant
+        function saveEditedRestaurant() {
+            const id = document.getElementById('edit-id').value;
+            const name = document.getElementById('edit-name').value.trim();
+            const answer = document.getElementById('edit-answer').value;
+
+            if (!name) {
+                alert('Please enter a restaurant name');
+                return;
+            }
+
+            // Check if another restaurant with the same name exists (excluding current)
+            const existing = restaurants.find(r =>
+                r.id !== id &&
+                r.name.toLowerCase().replace(/\s+/g, '').replace(/'/g, '') ===
+                name.toLowerCase().replace(/\s+/g, '').replace(/'/g, '')
+            );
+
+            if (existing) {
+                alert('A restaurant with this name already exists!');
+                return;
+            }
+
+            const restaurant = restaurants.find(r => r.id === id);
+            if (restaurant) {
+                restaurant.name = name;
+                restaurant.answer = answer;
+                restaurant.date = new Date().toISOString().split('T')[0];
+
+                saveToLocalStorage();
+                renderRestaurants();
+                editPanel.classList.remove('active');
+                showNotification('Restaurant updated!');
+            }
+        }
+
+        // Delete restaurant
+        function deleteRestaurant(id) {
+            if (confirm('Are you sure you want to delete this restaurant?')) {
+                restaurants = restaurants.filter(r => r.id !== id);
+                saveToLocalStorage();
+                renderRestaurants();
+                editPanel.classList.remove('active');
+                showNotification('Restaurant deleted!');
+            }
+        }
+
+        // Show share list panel
+        function showShareList() {
+            menuPanel.classList.remove('active');
+
+            let shareText = "In Search of Pink - Restaurant List\n\n";
+
+            const pinkRestaurants = restaurants.filter(r => r.answer === 'pink');
+            const noRestaurants = restaurants.filter(r => r.answer === 'no');
+            const notCheckedRestaurants = restaurants.filter(r => r.answer === 'not-checked');
+
+            if (pinkRestaurants.length > 0) {
+                shareText += "PINK:\n";
+                pinkRestaurants.forEach(r => shareText += `- ${r.name}\n`);
+                shareText += "\n";
+            }
+
+            if (noRestaurants.length > 0) {
+                shareText += "NO PINK:\n";
+                noRestaurants.forEach(r => shareText += `- ${r.name}\n`);
+                shareText += "\n";
+            }
+
+            if (notCheckedRestaurants.length > 0) {
+                shareText += "NOT CHECKED:\n";
+                notCheckedRestaurants.forEach(r => shareText += `- ${r.name}\n`);
+                shareText += "\n";
+            }
+
+            document.getElementById('share-text').value = shareText;
+            sharePanel.classList.add('active');
+        }
+
+        // Copy text to clipboard
+        function copyToClipboard() {
+            const textArea = document.getElementById('share-text');
+            textArea.select();
+            document.execCommand('copy');
+            showNotification('Copied to clipboard!');
+        }
+
+        // Import list from text
+        function importList() {
+            const text = document.getElementById('import-text').value.trim();
+            if (!text) return;
+
+            // Parse the text
+            const lines = text.split('\n').filter(line => line.trim() !== '');
+
+            let currentSection = '';
+            const newRestaurants = [];
+
+            lines.forEach(line => {
+                const trimmedLine = line.trim();
+
+                if (trimmedLine === 'PINK:') {
+                    currentSection = 'pink';
+                    return;
+                }
+
+                if (trimmedLine === 'NO PINK:') {
+                    currentSection = 'no';
+                    return;
+                }
+
+                if (trimmedLine === 'NOT CHECKED:') {
+                    currentSection = 'not-checked';
+                    return;
+                }
+
+                if (currentSection && trimmedLine.startsWith('- ')) {
+                    const name = trimmedLine.substring(2).trim();
+                    if (name) {
+                        newRestaurants.push({
+                            id: Date.now().toString() + Math.random(),
+                            name,
+                            answer: currentSection,
+                            date: new Date().toISOString().split('T')[0]
+                        });
+                    }
+                }
+            });
+
+            // Add new restaurants to the list
+            const existingNames = restaurants.map(r =>
+                r.name.toLowerCase().replace(/\s+/g, '').replace(/'/g, '')
+            );
+
+            newRestaurants.forEach(newRestaurant => {
+                const existingName = newRestaurant.name.toLowerCase().replace(/\s+/g, '').replace(/'/g, '');
+
+                if (!existingNames.includes(existingName)) {
+                    restaurants.push(newRestaurant);
+                } else {
+                    // Update existing restaurant if needed
+                    const existing = restaurants.find(r =>
+                        r.name.toLowerCase().replace(/\s+/g, '').replace(/'/g, '') === existingName
+                    );
+
+                    if (existing && existing.answer !== newRestaurant.answer) {
+                        existing.answer = newRestaurant.answer;
+                        existing.date = new Date().toISOString().split('T')[0];
+                    }
+                }
+            });
+
+            saveToLocalStorage();
+            renderRestaurants();
+            importPanel.classList.remove('active');
+            showNotification('List imported successfully!');
+        }
+
+        // Save to localStorage
+        function saveToLocalStorage() {
+            localStorage.setItem('restaurants', JSON.stringify(restaurants));
+        }
+
+        // Render restaurants list
+        function renderRestaurants() {
+            // Filter restaurants based on current filter and search
+            let filtered = restaurants;
+
+            if (currentFilter !== 'all') {
+                filtered = filtered.filter(r => r.answer === currentFilter);
+            }
+
+            if (currentSearch) {
+                const searchTerm = currentSearch.replace(/\s+/g, '').replace(/'/g, '');
+                filtered = filtered.filter(r =>
+                    r.name.toLowerCase().replace(/\s+/g, '').replace(/'/g, '').includes(searchTerm)
+                );
+            }
+
+            // Sort alphabetically
+            filtered.sort((a, b) => a.name.localeCompare(b.name));
+
+            // Render list
+            restaurantList.innerHTML = '';
+
+            if (filtered.length === 0) {
+                const noResults = document.createElement('li');
+                noResults.className = 'no-results';
+
+                if (currentSearch) {
+                    noResults.textContent = `No restaurants found for "${searchBox.value}"`;
+
+                    // Add button to add new restaurant
+                    const addButton = document.createElement('button');
+                    addButton.textContent = 'Add this restaurant';
+                    addButton.className = 'btn btn-primary';
+                    addButton.style.marginTop = '15px';
+                    addButton.addEventListener('click', () => {
+                        document.getElementById('restaurant-name').value = searchBox.value;
+                        addPanel.classList.add('active');
+                    });
+
+                    noResults.appendChild(addButton);
+                } else {
+                    noResults.textContent = 'No restaurants found';
+                }
+
+                restaurantList.appendChild(noResults);
+                return;
+            }
+
+            filtered.forEach(restaurant => {
+                const li = document.createElement('li');
+                li.className = 'restaurant-item';
+                li.setAttribute('data-id', restaurant.id);
+
+                // Highlight search terms
+                let displayName = restaurant.name;
+                if (currentSearch) {
+                    const searchTerm = currentSearch.replace(/\s+/g, '').replace(/'/g, '');
+                    const regex = new RegExp(`(${searchTerm})`, 'gi');
+                    displayName = restaurant.name.replace(regex, '<span class="highlight">$1</span>');
+                }
+
+                li.innerHTML = `
+                    <span class="restaurant-name" style="cursor: pointer;" onclick="editRestaurant('${restaurant.id}')">${displayName}</span>
+                    <div class="badge badge-${restaurant.answer === 'pink' ? 'pink' : restaurant.answer === 'no' ? 'gray' : 'striped'}"></div>
+                `;
+
+                restaurantList.appendChild(li);
+            });
+        }
+
+        // Update filter button counts
+        function updateFilterCounts() {
+            const counts = {
+                all: restaurants.length,
+                pink: restaurants.filter(r => r.answer === 'pink').length,
+                no: restaurants.filter(r => r.answer === 'no').length,
+                'not-checked': restaurants.filter(r => r.answer === 'not-checked').length
+            };
+
+            filterButtons.forEach(button => {
+                const filter = button.dataset.filter;
+                button.textContent = `${filter.charAt(0).toUpperCase() + filter.slice(1)} (${counts[filter]})`;
+            });
+        }
+
+        // Show notification
+        function showNotification(message) {
+            clearTimeout(notificationTimeout);
+            document.getElementById('notification-text').textContent = message;
+            notification.classList.add('show');
+
+            notificationTimeout = setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Save edited restaurant when save button is clicked
+        document.getElementById('save-edit-btn').addEventListener('click', saveEditedRestaurant);
+
+        // Delete restaurant when delete button is clicked
+        document.getElementById('delete-restaurant-btn').addEventListener('click', () => {
+            const id = document.getElementById('edit-id').value;
+            deleteRestaurant(id);
+        });
+
+        // Cancel edit
+        document.getElementById('cancel-edit-btn').addEventListener('click', () => {
+            editPanel.classList.remove('active');
+        });
+
+        // Initialize the app when the DOM is loaded
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

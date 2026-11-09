@@ -1,0 +1,437 @@
+<title>Pink, Three Ways</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Shrikhand&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: one reading column. Three sugar-packet cards (one per model), a live phone-frame viewer with notes beside it, then a feature scorecard and findings. Each model wears its packet color: pink, blue, yellow. */
+:root {
+  --bg: #FBF6F3;
+  --surface: #FFFFFF;
+  --ink: #261C21;
+  --muted: #6E5F66;
+  --line: #E8DCDF;
+  --pink: #CF2F7B;
+  --pink-soft: #FBE1EC;
+  --blue: #2F5FD0;
+  --blue-soft: #E1E9FB;
+  --yellow: #B98A00;
+  --yellow-soft: #FBF0C9;
+  --ok: #1F7A4D;
+  --ok-soft: #DCF1E5;
+  --part: #9A6200;
+  --part-soft: #FCEBCB;
+  --bad: #B3261E;
+  --bad-soft: #F9DEDB;
+  --frame: #2A2126;
+  --f-display: "Shrikhand", "Cooper Black", Georgia, serif;
+  --f-body: "Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #161114; --surface: #221A1E; --ink: #F4EAEE; --muted: #B3A3AA; --line: #3A2D33;
+    --pink: #FF6AA8; --pink-soft: #45192D; --blue: #86A8FF; --blue-soft: #1D2A4A;
+    --yellow: #F0C64A; --yellow-soft: #3D3214;
+    --ok: #6FD3A0; --ok-soft: #173426; --part: #F2B95A; --part-soft: #3D2C10; --bad: #FF8A80; --bad-soft: #43201D;
+    --frame: #050304;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #161114; --surface: #221A1E; --ink: #F4EAEE; --muted: #B3A3AA; --line: #3A2D33;
+  --pink: #FF6AA8; --pink-soft: #45192D; --blue: #86A8FF; --blue-soft: #1D2A4A;
+  --yellow: #F0C64A; --yellow-soft: #3D3214;
+  --ok: #6FD3A0; --ok-soft: #173426; --part: #F2B95A; --part-soft: #3D2C10; --bad: #FF8A80; --bad-soft: #43201D;
+  --frame: #050304;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink);
+  font: 400 17px/1.55 var(--f-body);
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 0 48px;
+}
+.page { max-width: 1040px; margin: 0 auto; display: grid; grid-template-columns: minmax(0, 1fr); gap: 56px; }
+h1, h2, h3 { text-wrap: balance; margin: 0; }
+p { margin: 0; }
+a { color: var(--pink); text-underline-offset: 3px; }
+button { font: inherit; color: inherit; cursor: pointer; }
+:focus-visible { outline: 3px solid var(--pink); outline-offset: 2px; }
+.label { font: 700 12.5px/1.2 var(--f-body); letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+.mono { font-family: var(--f-mono); font-size: 0.86em; }
+
+/* Masthead */
+.mast { padding-top: 40px; display: grid; gap: 14px; max-width: 70ch; }
+.mast h1 { font-family: var(--f-display); font-weight: 400; font-size: clamp(44px, 9vw, 76px); line-height: 1; color: var(--pink); }
+.mast h1 span { display: block; font: 700 14px/1 var(--f-body); letter-spacing: 0.22em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+.mast .lede { font-size: 19px; }
+.mast .meta { color: var(--muted); font-size: 15px; }
+
+/* Packets */
+.packets { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+@media (max-width: 760px) { .packets { grid-template-columns: 1fr; } }
+.packet {
+  --c: var(--pink); --c-soft: var(--pink-soft);
+  position: relative; display: grid; gap: 12px; padding: 22px 22px 20px;
+  background: var(--c-soft); color: var(--ink); border: 0; text-align: left;
+  clip-path: polygon(0 6px, 6px 0, 12px 6px, 18px 0, 24px 6px, 30px 0, 36px 6px, 42px 0, 48px 6px, 54px 0, 60px 6px, 66px 0, 72px 6px, 78px 0, 84px 6px, 90px 0, 96px 6px, 102px 0, 108px 6px, 114px 0, 120px 6px, 126px 0, 132px 6px, 138px 0, 144px 6px, 150px 0, 156px 6px, 162px 0, 168px 6px, 174px 0, 180px 6px, 186px 0, 192px 6px, 198px 0, 204px 6px, 210px 0, 216px 6px, 222px 0, 228px 6px, 234px 0, 240px 6px, 246px 0, 252px 6px, 258px 0, 264px 6px, 270px 0, 276px 6px, 282px 0, 288px 6px, 294px 0, 300px 6px, 306px 0, 312px 6px, 318px 0, 324px 6px, 330px 0, 336px 6px, 342px 0, 348px 6px, 354px 0, 360px 6px, 366px 0, 372px 6px, 378px 0, 384px 6px, 390px 0, 396px 6px, 402px 0, 408px 6px, 414px 0, 420px 6px, 426px 0, 432px 6px, 438px 0, 444px 6px, 450px 0, 456px 6px, 462px 0, 468px 6px, 474px 0, 480px 6px, 486px 0, 492px 6px, 498px 0, 504px 6px, 510px 0, 516px 6px, 522px 0, 528px 6px, 534px 0, 540px 6px, 546px 0, 552px 6px, 558px 0, 564px 6px, 570px 0, 576px 6px, 582px 0, 588px 6px, 594px 0, 600px 6px, 606px 0, 612px 6px, 618px 0, 624px 6px, 630px 0, 636px 6px, 642px 0, 648px 6px, 654px 0, 660px 6px, 666px 0, 672px 6px, 678px 0, 684px 6px, 690px 0, 696px 6px, 702px 0, 708px 6px, 714px 0, 720px 6px, 726px 0, 732px 6px, 738px 0, 744px 6px, 750px 0, 756px 6px, 762px 0, 768px 6px, 774px 0, 780px 6px, 786px 0, 792px 6px, 798px 0, 804px 6px, 810px 0, 816px 6px, 822px 0, 828px 6px, 834px 0, 840px 6px, 846px 0, 852px 6px, 858px 0, 864px 6px, 870px 0, 876px 6px, 882px 0, 888px 6px, 894px 0, 900px 6px, 900px 100%, 0 100%);
+}
+.packet.blue { --c: var(--blue); --c-soft: var(--blue-soft); }
+.packet.yellow { --c: var(--yellow); --c-soft: var(--yellow-soft); }
+.packet:hover { filter: brightness(0.98); }
+.packet[aria-current="true"] { box-shadow: inset 0 -5px 0 var(--c); }
+.packet .who { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.packet h3 { font-size: 22px; line-height: 1.2; }
+.packet .where { font-size: 14px; color: var(--muted); }
+.packet .chip { font: 700 12px/1 var(--f-body); letter-spacing: 0.1em; text-transform: uppercase; color: var(--c); }
+.score { display: flex; align-items: baseline; gap: 6px; }
+.score b { font-family: var(--f-display); font-weight: 400; font-size: 46px; line-height: 1; color: var(--c); font-variant-numeric: tabular-nums; }
+.score span { color: var(--muted); font-size: 15px; }
+.packet dl { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; font-size: 15px; }
+.packet dt { color: var(--muted); }
+.packet dd { margin: 0; }
+
+/* Viewer */
+.viewer { display: grid; gap: 20px; }
+.viewer-head { display: grid; gap: 6px; }
+.viewer-head h2, .section-head h2 { font-size: 30px; line-height: 1.15; }
+.controls { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; }
+.seg { display: inline-flex; flex-wrap: wrap; gap: 4px; padding: 4px; border-radius: 999px; background: var(--surface); border: 1px solid var(--line); }
+.seg button { border: 0; background: transparent; padding: 8px 16px; border-radius: 999px; font-size: 15px; font-weight: 700; color: var(--muted); }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+.seg button:disabled { display: none; }
+.stage { display: grid; grid-template-columns: 380px minmax(0, 1fr); gap: 32px; align-items: start; }
+@media (max-width: 860px) { .stage { grid-template-columns: 1fr; } }
+.phone {
+  width: 100%; max-width: 380px; margin: 0 auto; padding: 12px; border-radius: 40px; background: var(--frame);
+  box-shadow: 0 18px 40px rgba(60, 20, 40, 0.18);
+}
+.phone iframe { display: block; width: 100%; height: 680px; border: 0; border-radius: 28px; background: #fff; }
+@media (max-width: 480px) { .phone iframe { height: 600px; } }
+.phone-tools { display: flex; justify-content: center; gap: 18px; flex-wrap: wrap; margin-top: 12px; font-size: 15px; }
+.link-btn { border: 0; background: none; padding: 4px 0; color: var(--pink); text-decoration: underline; text-underline-offset: 3px; font-size: 15px; }
+.notes { display: grid; gap: 18px; min-width: 0; }
+.notes .tag { display: inline-block; padding: 4px 10px; border-radius: 999px; font: 700 12.5px/1.3 var(--f-body); letter-spacing: 0.08em; text-transform: uppercase; }
+.notes h3 { font-size: 26px; line-height: 1.2; }
+.notes .facts { display: flex; flex-wrap: wrap; gap: 8px 20px; color: var(--muted); font-size: 15px; }
+.notes .facts b { color: var(--ink); }
+.notes ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; }
+.notes li { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 8px; }
+.notes li::before { content: ""; width: 10px; height: 10px; margin-top: 8px; border-radius: 50%; background: var(--c, var(--muted)); }
+.notes li.ok { --c: var(--ok); }
+.notes li.part { --c: var(--part); }
+.notes li.bad { --c: var(--bad); }
+.aside { font-size: 15px; color: var(--muted); padding: 12px 14px; border-radius: 12px; background: var(--surface); border: 1px solid var(--line); }
+
+/* Scorecard */
+.section-head { display: grid; gap: 6px; margin-bottom: 18px; max-width: 70ch; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; min-width: 720px; font-size: 15px; }
+th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--line); vertical-align: middle; }
+tbody tr:last-child th, tbody tr:last-child td { border-bottom: 0; }
+thead th { font-size: 13px; line-height: 1.3; color: var(--muted); font-weight: 700; }
+thead th .m { display: block; color: var(--ink); font-size: 14px; }
+thead th.pink { box-shadow: inset 0 4px 0 var(--pink); }
+thead th.blue { box-shadow: inset 0 4px 0 var(--blue); }
+thead th.yellow { box-shadow: inset 0 4px 0 var(--yellow); }
+tbody th { font-weight: 400; }
+tbody th .n { font-family: var(--f-mono); color: var(--muted); margin-right: 8px; font-size: 13px; }
+tfoot td, tfoot th { border-top: 2px solid var(--line); border-bottom: 0; font-weight: 700; }
+.cell { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 999px; font-size: 13.5px; font-weight: 700; white-space: nowrap; }
+.cell.y { background: var(--ok-soft); color: var(--ok); }
+.cell.p { background: var(--part-soft); color: var(--part); }
+.cell.n { background: var(--bad-soft); color: var(--bad); }
+.cell::before { font-size: 12px; }
+.cell.y::before { content: "\2713"; }
+.cell.p::before { content: "\25D0"; }
+.cell.n::before { content: "\2715"; }
+
+/* Findings */
+.findings { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+@media (max-width: 700px) { .findings { grid-template-columns: 1fr; } }
+.finding { padding: 20px; border-radius: 16px; background: var(--surface); border: 1px solid var(--line); display: grid; gap: 8px; align-content: start; }
+.finding h3 { font-size: 20px; line-height: 1.25; }
+.finding p { color: var(--ink); }
+.method { max-width: 70ch; display: grid; gap: 12px; color: var(--muted); font-size: 15.5px; }
+.method h2 { color: var(--ink); font-size: 22px; }
+.method ul { margin: 0; padding-left: 20px; display: grid; gap: 6px; }
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+
+<div class="page">
+  <header class="mast">
+    <h1><span>In Search of</span>Pink, Three Ways</h1>
+    <p class="lede">One small app, built three times: once with Claude, and twice by AI models running offline on a Windows laptop through Ollama. Pick a version below and try it yourself.</p>
+    <p class="meta">The app tracks which Fort Lauderdale restaurants keep pink Sweet&rsquo;N Low packets in the sugar caddy. Each version was tested in a real browser against the same ten features.</p>
+  </header>
+
+  <section aria-label="The three contenders">
+    <div class="packets" id="packets">
+      <button class="packet" type="button" data-model="claude">
+        <div class="who"><h3>Claude</h3><span class="chip">Cloud</span></div>
+        <p class="where">Anthropic&rsquo;s model, in a conversation with browser testing between rounds</p>
+        <div class="score"><b>10</b><span>of 10 features work</span></div>
+        <dl><dt>Rounds</dt><dd>Several, with revisions</dd></dl>
+      </button>
+      <button class="packet blue" type="button" data-model="gpt-oss">
+        <div class="who"><h3>gpt-oss:20b</h3><span class="chip">On the laptop</span></div>
+        <p class="where">OpenAI&rsquo;s open general-purpose model, 13 GB</p>
+        <div class="score"><b>5</b><span>of 10 after one fix (3 more partly)</span></div>
+        <dl><dt>First try</dt><dd>~7&frac12; min, blank list</dd></dl>
+      </button>
+      <button class="packet yellow" type="button" data-model="qwen">
+        <div class="who"><h3>qwen3-coder:30b</h3><span class="chip">On the laptop</span></div>
+        <p class="where">Alibaba&rsquo;s open coding model, about 19 GB</p>
+        <div class="score"><b>8</b><span>of 10 after one fix (2 more partly)</span></div>
+        <dl><dt>First try</dt><dd>Under 10 min, 6 of 10</dd></dl>
+      </button>
+    </div>
+  </section>
+
+  <section class="viewer" aria-labelledby="viewerTitle">
+    <div class="viewer-head">
+      <span class="label">Try it</span>
+      <h2 id="viewerTitle">Use each version</h2>
+    </div>
+    <div class="controls">
+      <div class="seg" role="group" aria-label="Model" id="modelSeg">
+        <button type="button" data-model="claude">Claude</button>
+        <button type="button" data-model="gpt-oss">gpt-oss</button>
+        <button type="button" data-model="qwen">qwen3-coder</button>
+      </div>
+      <div class="seg" role="group" aria-label="Version" id="verSeg">
+        <button type="button" data-ver="1">First try</button>
+        <button type="button" data-ver="2">After one fix</button>
+      </div>
+    </div>
+    <div class="stage">
+      <div>
+        <div class="phone"><iframe id="app" title="App preview" src="apps/claude.html"></iframe></div>
+        <div class="phone-tools">
+          <a id="openFull" href="apps/claude.html" target="_blank" rel="noopener">Open full screen</a>
+          <button class="link-btn" type="button" id="resetBtn">Reset demo data</button>
+        </div>
+      </div>
+      <div class="notes" id="notes" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <section aria-labelledby="scoreTitle">
+    <div class="section-head">
+      <span class="label">Scorecard</span>
+      <h2 id="scoreTitle">The same ten features, five versions</h2>
+      <p>Both local models got the same written description of the finished Claude app. Every result comes from clicking through each feature in a browser, not from what the models said they built.</p>
+    </div>
+    <div class="table-wrap">
+      <table id="score">
+        <thead>
+          <tr>
+            <th scope="col">Feature</th>
+            <th scope="col" class="pink"><span class="m">Claude</span>Final</th>
+            <th scope="col" class="blue"><span class="m">gpt-oss</span>First try</th>
+            <th scope="col" class="blue"><span class="m">gpt-oss</span>After fix</th>
+            <th scope="col" class="yellow"><span class="m">qwen3-coder</span>First try</th>
+            <th scope="col" class="yellow"><span class="m">qwen3-coder</span>After fix</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+        <tfoot></tfoot>
+      </table>
+    </div>
+  </section>
+
+  <section aria-labelledby="findTitle">
+    <div class="section-head">
+      <span class="label">What I learned</span>
+      <h2 id="findTitle">Findings</h2>
+    </div>
+    <div class="findings">
+      <article class="finding">
+        <h3>One missing pair of quotes blanked the whole app</h3>
+        <p>gpt-oss wrote <span class="mono">var(--bg)</span> where it needed <span class="mono">'var(--bg)'</span>. Browsers refuse to run a script with a syntax error, so every feature failed at once.</p>
+      </article>
+      <article class="finding">
+        <h3>The coding model did much better</h3>
+        <p>qwen3-coder worked on the first try, sorted the list and connected every button. After one round of fixes it reached 8 of 10, and its fixes broke nothing new.</p>
+      </article>
+      <article class="finding">
+        <h3>Neither local model tested its own work</h3>
+        <p>Both read their code and judged it &ldquo;fine.&rdquo; Their summaries claimed undo, share and import worked when they didn&rsquo;t. gpt-oss&rsquo;s fix even introduced a new bug in the share text.</p>
+      </article>
+      <article class="finding">
+        <h3>A local model will invent data</h3>
+        <p>The prompt gave no dates, but qwen3-coder filled in &ldquo;last updated&rdquo; dates from 2023&ndash;24 for every restaurant, climbing about a month per row in list order.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="method" aria-labelledby="methodTitle">
+    <h2 id="methodTitle">How this was done</h2>
+    <ul>
+      <li>The local models ran in the Ollama desktop app on an AMD Ryzen AI 9 laptop with 96 GB of memory. Both ran entirely on the built-in Radeon graphics.</li>
+      <li>Each local model got one prompt describing the finished Claude app, then one follow-up. gpt-oss was told the browser&rsquo;s error message; qwen3-coder was told three symptoms in plain words. Both were asked to check for other bugs.</li>
+      <li>The comparison isn&rsquo;t perfectly even. The Claude version came from several rounds of conversation, and Claude could open the app in a browser and test it between rounds.</li>
+      <li>This page switches off browser pop-ups, so Delete won&rsquo;t go through in the gpt-oss and qwen3-coder versions here: they ask &ldquo;Are you sure?&rdquo; with a pop-up. It worked when tested in a normal browser.</li>
+    </ul>
+  </section>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  var FEATURES = [
+    'Title and subtitle',
+    'Search that ignores caps, spaces and apostrophes',
+    'Filter buttons with counts',
+    'Alphabetical list with colored badges',
+    'Offer to add a name the search didn’t find',
+    'Add button, with a duplicate warning',
+    'Edit, rename, delete, last-changed date',
+    'Undo after a change',
+    'Saves between visits',
+    'Share and import the list'
+  ];
+  // y = works, p = partly, n = broken
+  var COLS = [
+    { key: 'claude', grid: 'yyyyyyyyyy' },
+    { key: 'gpt-oss-1', grid: 'ynnnnnnnnn' },
+    { key: 'gpt-oss-2', grid: 'yyypynppyn' },
+    { key: 'qwen-1', grid: 'yypynyynyn' },
+    { key: 'qwen-2', grid: 'yypyyyypyy' }
+  ];
+  var WORD = { y: 'Works', p: 'Partly', n: 'Broken' };
+
+  var V = {
+    'claude': {
+      tag: 'Claude', color: 'pink', title: 'The original',
+      facts: [['Made', 'over several rounds of conversation'], ['Score', '10 of 10']],
+      items: [
+        ['ok', 'Every feature works, including undo for edits, sharing and importing.'],
+        ['ok', 'Confirmations happen inside the app instead of in browser pop-ups, so Delete works everywhere.'],
+        ['ok', 'Starting restaurants show “From the original list” instead of a made-up date.']
+      ],
+      aside: 'Claude tested this version in a browser between rounds, which the local models could not do.'
+    },
+    'gpt-oss-1': {
+      tag: 'gpt-oss:20b', color: 'blue', title: 'First try',
+      facts: [['Time', 'about 7½ minutes'], ['Score', '1 of 10']],
+      items: [
+        ['bad', 'The list is empty and nothing responds. Only the static title and search box appear.'],
+        ['bad', 'Cause: one line, panel.style.background=var(--bg);, is missing quotation marks. That is a syntax error, so the browser runs none of the script.']
+      ],
+      aside: 'Press F12 and open the Console in a normal browser to see the error: “Unexpected token ‘var’”.'
+    },
+    'gpt-oss-2': {
+      tag: 'gpt-oss:20b', color: 'blue', title: 'After one fix',
+      facts: [['Told', 'the error message'], ['Score', '5 of 10, 3 partly']],
+      items: [
+        ['ok', 'Fixed the syntax error. The 25 restaurants now load, search works and the counts are right.'],
+        ['bad', 'The pink + button does nothing; it was never connected to any code.'],
+        ['bad', 'The ☰ menu sits behind the title and can’t be clicked, so Share and Import are out of reach.'],
+        ['part', 'Cancel buttons fail, the list isn’t alphabetical, and undo after a rename adds a duplicate.'],
+        ['bad', 'New bug from the “fix”: the share text now lists the Not-checked restaurants under every heading.']
+      ],
+      aside: 'Its reasoning found 2 of the 7 problems. Most checks ended in “fine” or “Good.”'
+    },
+    'qwen-1': {
+      tag: 'qwen3-coder:30b', color: 'yellow', title: 'First try',
+      facts: [['Time', 'under 10 minutes'], ['Score', '6 of 10, 1 partly']],
+      items: [
+        ['ok', 'Opens with no errors. Search, sorting, adding, editing and saving all work.'],
+        ['bad', 'Share, Import and “Add this restaurant” flash and vanish. A “click outside to close” rule catches the same click that opened them.'],
+        ['bad', 'Undo does nothing: it reloads the list that was already saved.'],
+        ['part', 'Filter counts don’t change after you add a restaurant.'],
+        ['part', 'The “last updated” dates (2023–24) are invented.']
+      ],
+      aside: 'Its closing summary said every feature worked, undo, share and import included.'
+    },
+    'qwen-2': {
+      tag: 'qwen3-coder:30b', color: 'yellow', title: 'After one fix',
+      facts: [['Told', 'three symptoms'], ['Score', '8 of 10, 2 partly']],
+      items: [
+        ['ok', 'Share and Import now open and work. “Add this restaurant” opens with the name filled in.'],
+        ['part', 'Undo reverses adding or deleting, but not editing: change YOLO to No, press Undo, and it stays No.'],
+        ['part', 'Filter counts still don’t update. This one was left out of the follow-up on purpose, and it went unnoticed.'],
+        ['part', 'The invented dates are unchanged.']
+      ],
+      aside: 'No new bugs turned up. It didn’t mention finding anything beyond the three it was told about.'
+    }
+  };
+
+  var model = 'claude', ver = '2';
+  var frame = document.getElementById('app');
+  var openFull = document.getElementById('openFull');
+  var notes = document.getElementById('notes');
+
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function key() { return model === 'claude' ? 'claude' : model + '-' + ver; }
+
+  function show(push) {
+    var k = key(), v = V[k], src = 'apps/' + k + '.html';
+    if (frame.getAttribute('src') !== src) frame.setAttribute('src', src);
+    openFull.setAttribute('href', src);
+    frame.title = v.tag + ', ' + v.title;
+    [].forEach.call(document.querySelectorAll('#modelSeg button'), function (b) { b.setAttribute('aria-pressed', String(b.dataset.model === model)); });
+    [].forEach.call(document.querySelectorAll('#verSeg button'), function (b) {
+      b.disabled = model === 'claude';
+      b.setAttribute('aria-pressed', String(b.dataset.ver === ver));
+    });
+    [].forEach.call(document.querySelectorAll('#packets .packet'), function (b) { b.setAttribute('aria-current', String(b.dataset.model === model)); });
+    var colorVar = v.color;
+    notes.innerHTML =
+      '<div><span class="tag" style="background:var(--' + colorVar + '-soft);color:var(--' + colorVar + ')">' + esc(v.tag) + '</span></div>' +
+      '<h3>' + esc(v.title) + '</h3>' +
+      '<div class="facts">' + v.facts.map(function (f) { return '<span>' + esc(f[0]) + ' <b>' + esc(f[1]) + '</b></span>'; }).join('') + '</div>' +
+      '<ul>' + v.items.map(function (i) { return '<li class="' + i[0] + '"><span>' + esc(i[1]) + '</span></li>'; }).join('') + '</ul>' +
+      '<p class="aside">' + esc(v.aside) + '</p>';
+    if (push) { try { history.replaceState(null, '', '#' + k); } catch (e) { location.hash = k; } }
+  }
+
+  function fromHash() {
+    var h = (location.hash || '').slice(1);
+    if (!V[h]) return false;
+    if (h === 'claude') { model = 'claude'; }
+    else { model = h.replace(/-\d$/, ''); ver = h.slice(-1); }
+    return true;
+  }
+
+  document.getElementById('modelSeg').addEventListener('click', function (e) {
+    var b = e.target.closest('button'); if (!b) return;
+    model = b.dataset.model; show(true);
+  });
+  document.getElementById('verSeg').addEventListener('click', function (e) {
+    var b = e.target.closest('button'); if (!b || b.disabled) return;
+    ver = b.dataset.ver; show(true);
+  });
+  document.getElementById('packets').addEventListener('click', function (e) {
+    var b = e.target.closest('.packet'); if (!b) return;
+    model = b.dataset.model; show(true);
+    document.getElementById('viewerTitle').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+  document.getElementById('resetBtn').addEventListener('click', function () {
+    try { ['inSearchOfPink.v1', 'pinkRestaurants', 'restaurants'].forEach(function (k) { localStorage.removeItem(k); }); } catch (e) {}
+    try { frame.contentWindow.location.reload(); } catch (e) { frame.setAttribute('src', frame.getAttribute('src')); }
+  });
+  window.addEventListener('hashchange', function () { if (fromHash()) show(false); });
+
+  // Scorecard
+  var tb = document.querySelector('#score tbody'), tf = document.querySelector('#score tfoot');
+  tb.innerHTML = FEATURES.map(function (f, i) {
+    return '<tr><th scope="row"><span class="n">' + String(i + 1).padStart(2, '0') + '</span>' + esc(f) + '</th>' +
+      COLS.map(function (c) { var s = c.grid[i]; return '<td><span class="cell ' + s + '">' + WORD[s] + '</span></td>'; }).join('') + '</tr>';
+  }).join('');
+  tf.innerHTML = '<tr><th scope="row">Working fully</th>' + COLS.map(function (c) {
+    var y = c.grid.split('').filter(function (s) { return s === 'y'; }).length;
+    var p = c.grid.split('').filter(function (s) { return s === 'p'; }).length;
+    return '<td>' + y + ' of 10' + (p ? ' <span style="color:var(--muted);font-weight:400">+' + p + ' partly</span>' : '') + '</td>';
+  }).join('') + '</tr>';
+
+  fromHash();
+  show(false);
+})();
+</script>

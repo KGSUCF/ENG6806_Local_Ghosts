@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>In Search of Pink</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --pink:#FF69B4;
+  --gray:#777;
+  --bg:#fff;
+  --text:#111;
+  --accent:var(--pink);
+  --badge-size:1.6rem;
+  --toast-bg:rgba(0,0,0,.8);
+  --toast-text:#fff;
+}
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#111; --text:#eee; --toast-bg:rgba(255,255,255,.8); --toast-text:#111;}
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%}
+body{
+  font-family:Poppins,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  display:flex;
+  flex-direction:column;
+  height:100%;
+}
+header{
+  position:sticky;
+  top:0;
+  background:var(--bg);
+  z-index:10;
+  padding:1rem 0.5rem;
+  border-bottom:1px solid #ccc;
+}
+header h1{font-size:1.5rem;font-weight:600;margin-bottom:0.2rem;}
+header p{font-size:0.9rem;color:var(--gray);}
+.search-bar{
+  margin-top:0.5rem;
+  display:flex;
+  gap:0.5rem;
+}
+.search-bar input{
+  flex:1;
+  padding:0.6rem 0.8rem;
+  border:1px solid #ccc;
+  border-radius:4px;
+  font-size:1rem;
+}
+.search-bar button{
+  padding:0.6rem 1rem;
+  border:none;
+  background:var(--accent);
+  color:#fff;
+  border-radius:4px;
+  font-weight:600;
+  cursor:pointer;
+}
+.filter-buttons{
+  margin-top:0.5rem;
+  display:flex;
+  flex-wrap:wrap;
+  gap:0.4rem;
+}
+.filter-buttons button{
+  flex:1;
+  min-width:80px;
+  padding:0.4rem 0.6rem;
+  border:none;
+  border-radius:4px;
+  background:#eee;
+  color:#333;
+  font-weight:600;
+  cursor:pointer;
+}
+.filter-buttons button.active{background:var(--accent);color:#fff;}
+main{
+  flex:1;
+  overflow-y:auto;
+  padding:0.5rem;
+}
+.list{
+  list-style:none;
+  padding:0;
+}
+.list li{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:0.8rem 0.4rem;
+  border-bottom:1px solid #eee;
+  cursor:pointer;
+}
+.list li:last-child{border-bottom:none;}
+.badge{
+  width:var(--badge-size);
+  height:var(--badge-size);
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:0.8rem;
+  color:#fff;
+}
+.badge.pink{background:var(--pink);}
+.badge.gray{background:var(--gray);}
+.badge.not{
+  background:repeating-linear-gradient(45deg,#bbb 0,#bbb 3px,#fff 3px,#fff 6px);
+}
+.add-btn{
+  position:fixed;
+  bottom:1rem;
+  right:1rem;
+  background:var(--accent);
+  color:#fff;
+  border:none;
+  border-radius:50%;
+  width:56px;
+  height:56px;
+  font-size:2rem;
+  box-shadow:0 2px 6px rgba(0,0,0,.3);
+  cursor:pointer;
+}
+.modal-overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.4);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:20;
+}
+.modal{
+  background:var(--bg);
+  color:var(--text);
+  padding:1rem;
+  border-radius:8px;
+  max-width:90vw;
+  width:320px;
+  max-height:90vh;
+  overflow:auto;
+}
+.modal h2{font-size:1.3rem;margin-bottom:0.8rem;}
+.modal form{display:flex;flex-direction:column;gap:0.6rem;}
+.modal label{font-weight:600;}
+.modal input,.modal select{
+  padding:0.5rem;
+  border:1px solid #ccc;
+  border-radius:4px;
+}
+.modal .actions{display:flex;justify-content:flex-end;gap:0.5rem;}
+.modal button{padding:0.5rem 1rem;border:none;border-radius:4px;cursor:pointer;}
+.modal button.primary{background:var(--accent);color:#fff;}
+.modal button.secondary{background:#ddd;color:#333;}
+.toast{
+  position:fixed;
+  bottom:1rem;
+  left:50%;
+  transform:translateX(-50%);
+  background:var(--toast-bg);
+  color:var(--toast-text);
+  padding:0.6rem 1rem;
+  border-radius:4px;
+  display:flex;
+  align-items:center;
+  gap:0.8rem;
+  opacity:0;
+  transition:opacity .3s;
+}
+.toast.show{opacity:1;}
+.toast button{background:none;border:none;color:var(--accent);cursor:pointer;}
+</style>
+</head>
+<body>
+<header>
+  <h1>In Search of Pink</h1>
+  <p>Quickly check if a Fort Lauderdale restaurant has pink Sweet'N Low packets.</p>
+  <div class="search-bar">
+    <input type="text" id="searchInput" placeholder="Search restaurants…">
+    <button id="addNotFoundBtn" style="display:none;">Add “<span id="addNotFoundName"></span>”</button>
+  </div>
+  <div class="filter-buttons" id="filterButtons"></div>
+</header>
+<main>
+  <ul class="list" id="restaurantList"></ul>
+</main>
+<button class="add-btn" id="openAddModal">+</button>
+
+<div class="modal-overlay" id="modalOverlay" style="display:none;">
+  <div class="modal" id="modalContent"></div>
+</div>
+
+<div class="toast" id="toast">
+  <span id="toastMsg"></span>
+  <button id="undoBtn" style="display:none;">Undo</button>
+</div>
+
+<script>
+(() => {
+  const STORAGE_KEY = 'pinkRestaurants';
+  const STATUS = { Pink:'Pink', No:'No', Not:'Not checked' };
+  const STATUS_ORDER = ['Pink','No','Not checked'];
+  let data = []; // {name, status, lastChanged}
+  let filteredData = [];
+  let currentFilter = 'All';
+  let currentSearch = '';
+  let undoStack = [];
+  let lastAction = null;
+
+  const startingData = [
+    {name:"Doc B's", status:STATUS.Pink},
+    {name:"Tap 42", status:STATUS.Pink},
+    {name:"Moxies", status:STATUS.Pink},
+    {name:"YOLO", status:STATUS.Pink},
+    {name:"Foxy Brown", status:STATUS.Pink},
+    {name:"Blue Moon Fish", status:STATUS.Pink},
+    {name:"Fogo", status:STATUS.Pink},
+    {name:"Cheesecake Factory", status:STATUS.Pink},
+    {name:"Del Frisco's", status:STATUS.Pink},
+    {name:"Carrabba's", status:STATUS.Pink},
+    {name:"Lobster Bar", status:STATUS.Pink},
+    {name:"Boathouse", status:STATUS.No},
+    {name:"YOT", status:STATUS.No},
+    {name:"Louie Bossi", status:STATUS.No},
+    {name:"Big City", status:STATUS.No},
+    {name:"El Camino", status:STATUS.No},
+    {name:"60 Vines", status:STATUS.No},
+    {name:"Chimney House", status:STATUS.No},
+    {name:"Mykonos", status:STATUS.No},
+    {name:"S3", status:STATUS.No},
+    {name:"Seasons 52", status:STATUS.No},
+    {name:"Las Vegas", status:STATUS.No},
+    {name:"Worthwyld", status:STATUS.Not},
+    {name:"American Social", status:STATUS.Not},
+    {name:"Kaluz", status:STATUS.Not}
+  ].map(item=>({...item,lastChanged:Date.now()}));
+
+  function loadData() {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if(stored) {
+      try { data = JSON.parse(stored); return; } catch(e){}
+    }
+    data = startingData;
+    saveData();
+  }
+  function saveData() { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
+
+  function normalize(str){ return str.replace(/['\s]/g,'').toLowerCase(); }
+  function highlightMatch(name, query){
+    if(!query) return name;
+    const n = normalize(name);
+    const q = normalize(query);
+    let res=''; let idx=0;
+    for(const ch of name){
+      if(idx<q.length && ch.toLowerCase()===q[idx]){ res+=`<mark>${ch}</mark>`; idx++; }
+      else res+=ch;
+    }
+    return res;
+  }
+  function countByStatus(){
+    const counts={All:data.length, Pink:0, No:0, 'Not checked':0};
+    for(const {status} of data){
+      if(status==='Pink') counts.Pink++;
+      else if(status==='No') counts.No++;
+      else if(status==='Not checked') counts['Not checked']++;
+    }
+    return counts;
+  }
+  function updateFilterButtons(){
+    const counts=countByStatus();
+    const container=document.getElementById('filterButtons');
+    container.innerHTML='';
+    ['All','Pink','No','Not checked'].forEach(f=>{
+      const btn=document.createElement('button');
+      btn.textContent=`${f} (${counts[f]})`;
+      btn.classList.toggle('active',currentFilter===f);
+      btn.onclick=()=>{ currentFilter=f; render(); };
+      container.appendChild(btn);
+    });
+  }
+  function applyFilter(){
+    const lowerSearch=normalize(currentSearch);
+    return data.filter(item=>{
+      if(currentFilter!=='All' && item.status!==currentFilter) return false;
+      if(!lowerSearch) return true;
+      return normalize(item.name).includes(lowerSearch);
+    });
+  }
+  function renderList(){
+    const list=document.getElementById('restaurantList');
+    list.innerHTML='';
+    filteredData.forEach(item=>{
+      const li=document.createElement('li');
+      li.dataset.name=item.name;
+      li.innerHTML=`<span>${highlightMatch(item.name,currentSearch)}</span>`;
+      const badge=document.createElement('span');
+      badge.className='badge';
+      if(item.status==='Pink') badge.classList.add('pink');
+      else if(item.status==='No') badge.classList.add('gray');
+      else badge.classList.add('not');
+      li.appendChild(badge);
+      li.onclick=()=>openEditModal(item);
+      list.appendChild(li);
+    });
+  }
+  function render(){ currentSearch=document.getElementById('searchInput').value.trim(); filteredData=applyFilter(); updateFilterButtons(); renderList(); showAddNotFoundButton(); }
+  function showAddNotFoundButton(){
+    const btn=document.getElementById('addNotFoundBtn');
+    const span=document.getElementById('addNotFoundName');
+    const q=document.getElementById('searchInput').value.trim();
+    if(q && !data.some(it=>normalize(it.name)===normalize(q))){
+      span.textContent=q; btn.style.display='inline-block';
+    }else btn.style.display='none';
+  }
+  document.getElementById('searchInput').addEventListener('input',()=>render());
+  document.getElementById('addNotFoundBtn').addEventListener('click',()=>openAddModal(document.getElementById('searchInput').value.trim()));
+
+  const modalOverlay=document.getElementById('modalOverlay');
+  const modalContent=document.getElementById('modalContent');
+  function closeModal(){ modalOverlay.style.display='none'; modalContent.innerHTML=''; }
+  function openAddModal(prefillName=''){
+    modalContent.innerHTML=`<h2>Add Restaurant</h2>
+    <form id="addForm">
+      <label>Name</label><input type="text" name="name" required value="${prefillName}">
+      <label>Status</label>
+      <select name="status">
+        <option value="Pink">Pink</option>
+        <option value="No">No</option>
+        <option value="Not checked">Not checked</option>
+      </select>
+      <div class="actions"><button type="submit" class="primary">Add</button><button type="button" class="secondary" onclick="closeModal()">Cancel</button></div>
+    </form>`;
+    modalOverlay.style.display='flex';
+    modalContent.querySelector('#addForm').addEventListener('submit',e=>{
+      e.preventDefault(); const form=e.target; const name=form.name.value.trim(); const status=form.status.value;
+      if(!name) return;
+      if(data.some(it=>normalize(it.name)===normalize(name))){ alert('Restaurant already exists.'); return; }
+      const newItem={name,status,lastChanged:Date.now()}; data.push(newItem); saveData(); render(); closeModal(); showToast(`Added "${name}".`);
+    });
+  }
+  function openEditModal(item){
+    modalContent.innerHTML=`<h2>Edit Restaurant</h2>
+    <form id="editForm">
+      <label>Name</label><input type="text" name="name" required value="${item.name}">
+      <label>Status</label>
+      <select name="status">
+        <option value="Pink">Pink</option>
+        <option value="No">No</option>
+        <option value="Not checked">Not checked</option>
+      </select>
+      <label>Last Changed</label><input type="text" disabled value="${new Date(item.lastChanged).toLocaleString()}">
+      <div class="actions"><button type="submit" class="primary">Save</button><button type="button" class="secondary" onclick="closeModal()">Cancel</button><button type="button" class="secondary" id="deleteBtn">Delete</button></div>
+    </form>`;
+    modalOverlay.style.display='flex';
+    const form=modalContent.querySelector('#editForm'); form.status.value=item.status;
+    form.addEventListener('submit',e=>{
+      e.preventDefault(); const newName=form.name.value.trim(); const newStatus=form.status.value;
+      const prev={...item}; item.name=newName; item.status=newStatus; item.lastChanged=Date.now();
+      saveData(); render(); closeModal(); showToast(`Updated "${newName}".`,prev);
+    });
+    document.getElementById('deleteBtn').addEventListener('click',()=>{
+      if(confirm(`Delete "${item.name}"?`)){
+        const idx=data.indexOf(item); const prev={...item}; data.splice(idx,1); saveData(); render(); closeModal(); showToast(`Deleted "${item.name}".`,prev);
+      }
+    });
+  }
+  modalOverlay.addEventListener('click',e=>{ if(e.target===modalOverlay) closeModal(); });
+
+  const toast=document.getElementById('toast'); const toastMsg=document.getElementById('toastMsg'); const undoBtn=document.getElementById('undoBtn'); let undoTimer;
+  function showToast(msg,prev=null){
+    toastMsg.textContent=msg; if(prev){ undoBtn.style.display='inline'; undoStack.push(prev); } else undoBtn.style.display='none';
+    toast.classList.add('show'); clearTimeout(undoTimer); undoTimer=setTimeout(()=>{toast.classList.remove('show');},4000);
+  }
+  undoBtn.onclick=()=>undoLast();
+  function undoLast(){
+    const prev=undoStack.pop(); if(!prev) return;
+    const idx=data.findIndex(it=>normalize(it.name)===normalize(prev.name));
+    if(idx>=0) data[idx]=prev; else data.push(prev);
+    saveData(); render(); showToast(`Undo performed.`,null);
+  }
+
+  // Share & Import
+  function createSharePanel(){
+    const groups={Pink:[],No:[],Not:[]};
+    data.forEach(it=>{
+      if(it.status==='Pink') groups.Pink.push(it.name);
+      else if(it.status==='No') groups.No.push(it.name);
+      else groups.Not.push(it.name);
+    });
+    let txt='';
+    ['Pink','No','Not'].forEach(cat=>{
+      txt+=`${cat}\n`;
+      groups[cat==='Not'?'Not':'Not'].forEach(name=>txt+=`- ${name}\n`);
+      txt+='\n';
+    });
+    const div=document.createElement('div');
+    div.innerHTML=`<h2>Share List</h2>
+      <textarea id="shareText" style="width:100%;height:150px;">${txt}</textarea>
+      <div class="actions"><button id="copyBtn" class="primary">Copy</button><button id="shareBtn" class="primary">Share</button><button id="closeShareBtn" class="secondary">Close</button></div>`;
+    openCustomPanel(div);
+    document.getElementById('copyBtn').onclick=()=>{navigator.clipboard.writeText(txt).then(()=>alert('Copied to clipboard.'));};
+    document.getElementById('shareBtn').onclick=()=>{ if(navigator.share){navigator.share({title:'In Search of Pink List',text:txt});} else alert('Share not supported');};
+    document.getElementById('closeShareBtn').onclick=()=>closeCustomPanel();
+  }
+  function createImportPanel(){
+    const div=document.createElement('div');
+    div.innerHTML=`<h2>Import List</h2>
+      <textarea id="importText" style="width:100%;height:150px;" placeholder="Paste the list here…"></textarea>
+      <div class="actions"><button id="importBtn" class="primary">Import</button><button id="closeImportBtn" class="secondary">Close</button></div>`;
+    openCustomPanel(div);
+    document.getElementById('importBtn').onclick=()=>importList();
+    document.getElementById('closeImportBtn').onclick=()=>closeCustomPanel();
+  }
+  function importList(){
+    const txt=document.getElementById('importText').value.trim(); if(!txt){alert('No text provided.');return;}
+    const lines=txt.split(/\r?\n/); let currentCat=null; const added=[]; const updated=[];
+    lines.forEach(line=>{
+      const t=line.trim(); if(!t) return;
+      if(['Pink','No','Not checked'].includes(t)){ currentCat=t; return;}
+      if(!currentCat) return;
+      const name=t.replace(/^-\s*/, ''); const existing=data.find(it=>normalize(it.name)===normalize(name));
+      if(existing){ if(existing.status!==currentCat){ existing.status=currentCat; existing.lastChanged=Date.now(); updated.push(name);} }
+      else{ data.push({name, status:currentCat, lastChanged:Date.now()}); added.push(name);}
+    });
+    saveData(); render(); closeCustomPanel();
+    let msg=`Imported. Added ${added.length} new, updated ${updated.length}.`;
+    showToast(msg);
+  }
+  function openCustomPanel(content){ modalContent.innerHTML=''; modalContent.appendChild(content); modalOverlay.style.display='flex'; }
+  function closeCustomPanel(){ closeModal(); }
+
+  // Menu
+  const menuBtn=document.createElement('button'); menuBtn.textContent='☰'; menuBtn.style.position='fixed'; menuBtn.style.top='0.5rem'; menuBtn.style.right='0.5rem'; menuBtn.style.background='transparent'; menuBtn.style.border='none'; menuBtn.style.fontSize='1.5rem'; menuBtn.style.cursor='pointer'; menuBtn.onclick=()=>{ openMenu(); }; document.body.appendChild(menuBtn);
+  function openMenu(){
+    const panel=document.createElement('div'); panel.style.position='fixed'; panel.style.top='0'; panel.style.right='0'; panel.style.width='250px'; panel.style.height='100%'; panel.style.background='var(--bg)'; panel.style.boxShadow='-2px 0 6px rgba(0,0,0,.3)'; panel.style.padding='1rem';
+    panel.innerHTML=`<h2>Menu</h2>
+      <button id="shareListBtn" class="primary" style="width:100%;margin-top:0.5rem;">Share the list</button>
+      <button id="importListBtn" class="primary" style="width:100%;margin-top:0.5rem;">Import a list</button>`;
+    document.body.appendChild(panel);
+    document.getElementById('shareListBtn').onclick=()=>{createSharePanel();document.body.removeChild(panel);};
+    document.getElementById('importListBtn').onclick=()=>{createImportPanel();document.body.removeChild(panel);};
+    panel.onclick=e=>{ e.stopPropagation(); };
+    panel.onmouseleave=()=>{ document.body.removeChild(panel); };
+  }
+
+  loadData(); render();
+})();
+</script>
+</body>
+</html>

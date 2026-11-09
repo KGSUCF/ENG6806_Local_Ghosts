@@ -5,7 +5,7 @@
 | How it was made | Several rounds of conversation | One prompt | One prompt |
 | Time to answer | Several sessions | ~7.5 minutes | Under 10 minutes |
 | Opened and worked on first try? | Yes | No: blank list (one JavaScript syntax error stops the whole script) | Yes |
-| Features that work (out of 10) | 10 | About 4 after one fix round | 6 fully, 1 partly, 3 broken |
+| Features that work (out of 10) | 10 | 5 fully + 3 partly after one fix round | 6 fully, 1 partly, 3 broken |
 | What broke or was missing | | See below | |
 | Look and feel | | | |
 
