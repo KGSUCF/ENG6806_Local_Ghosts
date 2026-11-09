@@ -44,3 +44,12 @@ What its thinking found, compared with the browser test:
 | Undo after rename creates a duplicate | No. It looked at undo and decided to "ignore" it |
 
 How it reasons: it reads the code and judges each part rather than running it, so a lot of lines end in "fine," "ok," or "Good." It also hedges ("Might show variable but will apply") and starts by guessing the error is in the CSS before finding the real line.
+
+### gpt-oss:20b, version 2 (`local/pink-gpt-oss-v2.html`)
+
+Browser test of the code it returned after debugging:
+
+- ✅ Fixed: the list now loads (25 restaurants, no script errors) and the "Not checked" count shows 3.
+- ❌ Still broken: the + Add button does nothing; Cancel fails ("closeModal is not defined"); the list isn't alphabetical; undo after a rename creates a duplicate.
+- ❌ Newly found: the ☰ menu button sits *behind* the title, so you can't click it. Share and Import can't be reached.
+- ❌ **New bug introduced by the "fix":** in Share it changed `groups[cat==='Not'?'Not':cat]` to `groups[cat==='Not'?'Not':'Not']`, so every heading (Pink, No, Not) lists the three Not-checked restaurants. A fix made something else worse.
