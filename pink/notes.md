@@ -3,9 +3,9 @@
 | | Claude (original) | gpt-oss:20b | qwen3-coder:30b (optional) |
 |---|---|---|---|
 | How it was made | Several rounds of conversation | One prompt | One prompt |
-| Time to answer | Several sessions | ~7.5 minutes | |
-| Opened and worked on first try? | Yes | No: blank list (one JavaScript syntax error stops the whole script) | |
-| Features that work (out of 10) | 10 | | |
+| Time to answer | Several sessions | ~7.5 minutes | Under 10 minutes |
+| Opened and worked on first try? | Yes | No: blank list (one JavaScript syntax error stops the whole script) | Yes |
+| Features that work (out of 10) | 10 | About 4 after one fix round | 6 fully, 1 partly, 3 broken |
 | What broke or was missing | | See below | |
 | Look and feel | | | |
 
@@ -53,3 +53,24 @@ Browser test of the code it returned after debugging:
 - ❌ Still broken: the + Add button does nothing; Cancel fails ("closeModal is not defined"); the list isn't alphabetical; undo after a rename creates a duplicate.
 - ❌ Newly found: the ☰ menu button sits *behind* the title, so you can't click it. Share and Import can't be reached.
 - ❌ **New bug introduced by the "fix":** in Share it changed `groups[cat==='Not'?'Not':cat]` to `groups[cat==='Not'?'Not':'Not']`, so every heading (Pink, No, Not) lists the three Not-checked restaurants. A fix made something else worse.
+
+### qwen3-coder:30b, first attempt (`local/pink-qwen3-coder.html`)
+
+Same original prompt, one try, under 10 minutes. Opened with no script errors. Browser test of the 10 requested features:
+
+| # | Feature | Result |
+|---|---|---|
+| 1 | Title and subtitle | ✅ |
+| 2 | Search ignoring caps, apostrophes, spaces | ✅ "docbs" finds Doc B's. ⚠️ No highlighting when you type it that way |
+| 3 | Filter buttons with counts | ⚠️ Work, but counts don't update after adding a restaurant, and the label reads "Not-checked" |
+| 4 | Alphabetical list with colored badges | ✅ |
+| 5 | Offer to add a restaurant a search didn't find | ❌ The button appears, but the panel closes the moment it opens |
+| 6 | Add restaurant, warn on duplicates | ✅ "Tap42" correctly flagged as a duplicate |
+| 7 | Edit answer, fix name, delete with confirmation, show date | ✅ Works. ⚠️ The "last updated" dates for the starting list (2023–2024) are **made up** |
+| 8 | Message with Undo after changes | ❌ Undo button shows but does nothing (it reloads the already-saved list) |
+| 9 | Saves between visits | ✅ |
+| 10 | Share and Import from the menu | ❌ Menu opens, but both panels close instantly because a "click outside to close" rule catches the same click that opened them |
+
+Its closing summary claimed every feature worked, including undo, share and import. Three of those claims are false.
+
+Compared with gpt-oss: it worked on the first try, sorted the list, and connected the + button. It also made much more design effort (rounded cards, dark mode, a pink round menu button). It didn't test its own work either, so the failures were the kind that only show when you click.
