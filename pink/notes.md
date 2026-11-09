@@ -74,3 +74,19 @@ Same original prompt, one try, under 10 minutes. Opened with no script errors. B
 Its closing summary claimed every feature worked, including undo, share and import. Three of those claims are false.
 
 Compared with gpt-oss: it worked on the first try, sorted the list, and connected the + button. It also made much more design effort (rounded cards, dark mode, a pink round menu button). It didn't test its own work either, so the failures were the kind that only show when you click.
+
+### qwen3-coder:30b, version 2 (`local/pink-qwen3-coder-v2.html`)
+
+Follow-up prompt: three symptoms described in plain terms (Share/Import vanish, "Add this restaurant" vanishes, Undo does nothing), plus "check the rest of the code for other bugs." It didn't report finding anything else.
+
+Browser test:
+
+| Problem | Fixed? |
+|---|---|
+| Share and Import panels vanish | ✅ Both open and work. An imported list adds new restaurants and updates existing ones |
+| "Add this restaurant" panel vanishes | ✅ Opens, with the searched name filled in |
+| Undo does nothing | ⚠️ Partly. Undo now reverses an add or a delete, but **not an edit**: change YOLO from Pink to No, press Undo, and it stays No. Its saved copy of the list points to the same restaurant records it then changes, so there's nothing to go back to |
+| Filter counts don't update (deliberately not mentioned) | ❌ Not noticed. After adding and importing, the count still reads All (25) with 26 restaurants on screen |
+| Made-up 2023–2024 dates | Unchanged |
+
+Score after one fix round: **about 8 of 10 features working fully**, with undo partly working and the filter counts stale. gpt-oss reached about 4 after its fix round, and its "fix" introduced a new bug. qwen's fixes introduced none that the test found.
