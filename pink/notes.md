@@ -26,3 +26,21 @@ Tested in a headless browser.
   - Shared text uses the heading "Not", which Import doesn't recognize, so a round trip files Not-checked restaurants under No.
   - Undo after renaming a restaurant adds a duplicate instead of reverting it.
   - "Last changed" dates for the starting list are all the moment the page first loaded.
+
+### gpt-oss:20b, second turn (debugging its own code)
+
+Follow-up prompt: the console error ("Unexpected token 'var'") plus a request to check the rest of the code. Its full thinking is in `local/gpt-oss-fix-thinking.txt`.
+
+What its thinking found, compared with the browser test:
+
+| Problem | Found by the model? |
+|---|---|
+| `var(--bg)` syntax error (fatal) | Yes, with the right fix (`'var(--bg)'`) |
+| "Not checked" count shows undefined | Yes |
+| + Add button never connected | No. It checked the *other* add button and said "Good" |
+| Cancel buttons can't reach `closeModal()` | No |
+| List not alphabetical | No |
+| Share/Import heading mismatch ("Not" vs "Not checked") | No |
+| Undo after rename creates a duplicate | No. It looked at undo and decided to "ignore" it |
+
+How it reasons: it reads the code and judges each part rather than running it, so a lot of lines end in "fine," "ok," or "Good." It also hedges ("Might show variable but will apply") and starts by guessing the error is in the CSS before finding the real line.

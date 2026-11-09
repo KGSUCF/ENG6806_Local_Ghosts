@@ -1,0 +1,55 @@
+Error: "Unexpected token 'var'" likely inside CSS where var(--bg) used incorrectly. In style for panel boxShadow maybe 'var(--bg)' wrong. In openMenu function panel style: background=var(--bg); should be background: var(--bg);. Also color for menu panel etc. Also panel variable used incorrectly. Also CSS for toast etc maybe correct.
+
+Also there may be other bugs: In CSS, background: var(--bg); correct. In JS: panel.style.background=var(--bg); That's wrong; var(--bg) is CSS variable but JS can't use that. Should use computed style? Just use panel.style.background = getComputedStyle(document.documentElement).getPropertyValue('--bg'); But easier: use panel.style.background = getComputedStyle(document.documentElement).getPropertyValue('--bg');. Could also set to the CSS variable string: panel.style.background = 'var(--bg)'; But then it may not resolve? Setting CSS property to 'var(--bg)' will use var inside CSS, but style.background sets inline style to value 'var(--bg)' which is a CSS value referencing variable. That works. So we can set panel.style.background = 'var(--bg)';. So fix.
+
+Also in CSS we had .toast{...}. For toast color, we used --toast-bg. That's fine.
+
+Other potential bugs: filterButtons counts: we used status==='Not' but data status values are 'Not checked' maybe. Should use 'Not checked'. So count by status should use correct values: if(item.status==='Pink'), else if(item.status==='No'), else if(item.status==='Not checked'). Update accordingly.
+
+Also filterButtons list uses 'Not checked' but we set class accordingly. In filter logic, if(currentFilter!=='All' && item.status!==currentFilter) but currentFilter might be 'Not checked' string; ok.
+
+In addNotFound, we check if q && !data.some(it=>normalize(it.name)===normalize(q)). Good.
+
+When opening edit modal, we set status value to item.status; but default in select options are Pink, No, Not checked; ok.
+
+Undo: when prev is added item we push prev but not record action type. Undo function just revert to prev. But for deletion we store prev. For addition we push prev maybe? In showToast for add we pass prev? In openAddModal we didn't call showToast with prev. But we could ignore. Undo only relevant for edit or delete.
+
+Other bug: In applyFilter we use normalize(item.name).includes(lowerSearch). That's fine.
+
+In highlightMatch we highlight sequential matches but may highlight too many? Ok.
+
+Search box button Add Not Found uses btn.style.display inline-block; we may need to style correctly.
+
+Also in CSS, .add-btn has width 56px, etc.
+
+Also menu button style: we used background= var(--bg) incorrectly; we will change to background: var(--bg);.
+
+Also panel.style.boxShadow='-2px 0 6px rgba(0,0,0,.3)'; should be fine.
+
+Also we need to set panel style top, right etc. We used panel.style.right='0';. Should also set panel.style.height='100%'; etc. Fine.
+
+Also we set panel.onclick to stopPropagation, but panel may be inside document.body; closing onmouseleave uses removeChild. Good.
+
+Also we used CSS variable names --toast-bg, --toast-text. For dark mode we set --toast-bg:rgba(255,255,255,.8); but we didn't set --toast-text? We set --toast-text:#111; which may be ok.
+
+Now check for other syntax errors: In CSS we had .badge.not{background: repeating-linear-gradient(45deg, #bbb 0, #bbb 3px, #fff 3px, #fff 6px);}. Fine.
+
+Check the JS for stray semicolons.
+
+The console error likely from line panel.style.background=var(--bg);. So fix.
+
+Also we used document.body.removeChild(panel); inside openMenu after click. But we removed panel before calling openMenu? In click events we remove panel after calling action. Works.
+
+Also panel.style.background = 'var(--bg)'; might not be applied due to using var as CSS variable. Might show variable but will apply.
+
+Let's produce corrected file.
+
+Also we need to adjust some CSS: .modal color variable --toast-bg etc fine.
+
+Also addNotFoundBtn styling: show/hide; we may need to style as button but we don't set color.
+
+Also search button may not needed but fine.
+
+Also add button overlay may conflict with menu; but fine.
+
+Let's produce full corrected file.
